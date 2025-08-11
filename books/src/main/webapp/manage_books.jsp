@@ -1,220 +1,198 @@
 <%@ page import="java.sql.*" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Manage Books - Pahana Edu</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Manage Books - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(to right, #e0eafc, #cfdef3);
-            padding: 30px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f6f8;
+            margin: 0; padding: 20px;
         }
-
-        h2 {
+        h1 {
             text-align: center;
-            color: #2c3e50;
+            color: #333;
             margin-bottom: 20px;
+            text-shadow: 1px 1px 2px #aaa;
         }
-
-        form {
+        .container {
+            max-width: 900px;
+            margin: auto;
             background: #fff;
             padding: 20px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 600px;
-            margin: 20px auto;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-
-        label {
-            font-weight: bold;
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            align-items: center;
         }
-
-        input {
-            width: 100%;
+        input[type="text"], input[type="number"] {
             padding: 10px;
-            margin: 10px 0 20px 0;
-            border-radius: 6px;
+            font-size: 1rem;
             border: 1px solid #ccc;
-            font-size: 16px;
+            border-radius: 6px;
+            flex: 1;
+            min-width: 150px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            transition: border-color 0.3s ease;
         }
-
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
         button {
-            background: #3498db;
+            background: #007bff;
             color: white;
-            padding: 12px;
             border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
             border-radius: 6px;
-            width: 100%;
-            font-size: 16px;
             cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+            transition: background-color 0.3s ease;
         }
-
         button:hover {
-            background: #2980b9;
+            background: #0056b3;
         }
-
-        .delete-btn {
-            background: #e74c3c;
-        }
-
-        .delete-btn:hover {
-            background: #c0392b;
-        }
-
-        .success-msg, .error-msg {
-            padding: 12px;
-            margin: 20px auto;
-            border-radius: 6px;
-            width: 90%;
-            max-width: 600px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .success-msg {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
-        .error-msg {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-
         table {
-            width: 90%;
-            margin: 30px auto;
+            width: 100%;
             border-collapse: collapse;
-            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
         }
-
         th, td {
-            padding: 15px;
-            text-align: center;
-            border-bottom: 1px solid #eee;
+            padding: 14px 20px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            background: #fff;
         }
-
         th {
-            background: #2c3e50;
+            background: #007bff;
             color: white;
+            text-shadow: 1px 1px 2px #004080;
         }
-
-        tr:nth-child(even) {
-            background: #f9f9f9;
+        tr:hover {
+            background: #f1f9ff;
         }
-
-        .back-btn {
-            display: block;
-            margin: 30px auto;
-            width: 220px;
-            background: #6c757d;
+        .delete-btn {
+            background: #dc3545;
+            border: none;
+            padding: 8px 12px;
             color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(220,53,69,0.3);
+            transition: background-color 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .delete-btn:hover {
+            background: #a71d2a;
+        }
+        .icon {
+            margin-right: 6px;
+        }
+        .message {
+            margin-bottom: 20px;
             padding: 12px;
             border-radius: 8px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 16px;
-            transition: background 0.3s ease;
-        }
-
-        .back-btn:hover {
-            background: #5a6268;
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            box-shadow: 0 2px 5px rgba(40,167,69,0.2);
         }
     </style>
 </head>
 <body>
+<div class="container">
+    <h1><i class="fa-solid fa-book icon"></i>Manage Books</h1>
 
-<h2><i class="fa-solid fa-book"></i> Manage Books</h2>
+    <%
+        String message = (String) request.getAttribute("message");
+        if (message != null) {
+    %>
+        <div class="message"><i class="fa-solid fa-circle-check"></i> <%= message %></div>
+    <% } %>
 
-<%
-    String message = request.getParameter("message");
-    if ("addsuccess".equals(message)) {
-%>
-    <div class="success-msg"><i class="fa-solid fa-circle-check"></i> Book added successfully!</div>
-<%
-    } else if ("deletesuccess".equals(message)) {
-%>
-    <div class="success-msg"><i class="fa-solid fa-trash"></i> Book deleted successfully!</div>
-<%
-    } else if ("error".equals(message)) {
-%>
-    <div class="error-msg"><i class="fa-solid fa-circle-xmark"></i> Operation failed!</div>
-<%
-    }
-%>
+    <form action="ManageBooksServlet" method="post">
+        <input type="hidden" name="action" value="add" />
+        <input type="text" name="title" placeholder="Book Title *" required />
+        <input type="text" name="author" placeholder="Author" />
+        <input type="text" name="category" placeholder="Category" />
+        <input type="number" step="0.01" name="price" placeholder="Price *" required />
+        <input type="number" name="quantity" placeholder="Quantity" min="0" />
+        <button type="submit"><i class="fa-solid fa-plus"></i> Add Book</button>
+    </form>
 
-<!-- Add Book Form -->
-<form method="post" action="ManageBooksServlet">
-    <label><i class="fa-solid fa-heading"></i> Title:</label>
-    <input type="text" name="title" required>
+    <table>
+        <thead>
+            <tr>
+                <th><i class="fa-solid fa-hashtag"></i> ID</th>
+                <th><i class="fa-solid fa-book"></i> Title</th>
+                <th><i class="fa-solid fa-user"></i> Author</th>
+                <th><i class="fa-solid fa-tag"></i> Category</th>
+                <th><i class="fa-solid fa-dollar-sign"></i> Price</th>
+                <th><i class="fa-solid fa-boxes-stacked"></i> Quantity</th>
+                <th><i class="fa-solid fa-trash"></i> Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%
+                try {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                    String url = "jdbc:mysql://localhost:3306/pahanaedu";
+                    String user = "root";
+                    String pass = "";
+                    Connection conn = DriverManager.getConnection(url, user, pass);
 
-    <label><i class="fa-solid fa-user-pen"></i> Author:</label>
-    <input type="text" name="author" required>
+                    String sql = "SELECT * FROM books ORDER BY book_id DESC";
+                    PreparedStatement ps = conn.prepareStatement(sql);
+                    ResultSet rs = ps.executeQuery();
 
-    <label><i class="fa-solid fa-money-bill-wave"></i> Price:</label>
-    <input type="number" name="price" step="0.01" required>
-
-    <label><i class="fa-solid fa-boxes-stacked"></i> Quantity:</label>
-    <input type="number" name="quantity" required>
-
-    <button type="submit" name="action" value="add">
-        <i class="fa-solid fa-plus-circle"></i> Add Book
-    </button>
-</form>
-
-<!-- Delete Book Form -->
-<form method="post" action="ManageBooksServlet">
-    <label><i class="fa-solid fa-trash"></i> Book name to Delete</label>
-    <input type="name" name="title" required>
-
-    <button class="delete-btn" type="submit" name="action" value="delete">
-        <i class="fa-solid fa-trash-can"></i> Delete Book
-    </button>
-</form>
-
-<!-- Book Table -->
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Author</th>
-        <th>Price (Rs)</th>
-        <th>Quantity</th>
-    </tr>
-<%
-    try {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/pahanaedu", "root", "");
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM book");
-
-        while (rs.next()) {
-%>
-    <tr>
-        <td><%= rs.getInt("book_id") %></td>
-        <td><%= rs.getString("title") %></td>
-        <td><%= rs.getString("author") %></td>
-        <td><%= rs.getDouble("price") %></td>
-        <td><%= rs.getInt("quantity") %></td>
-    </tr>
-<%
-        }
-        rs.close();
-        conn.close();
-    } catch (Exception e) {
-        out.print("<tr><td colspan='5'>Error loading data.</td></tr>");
-    }
-%>
-</table>
-
-<!-- Back to Admin Panel Button -->
-<a href="admin_dashboard.jsp" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Admin Panel</a>
-
+                    while (rs.next()) {
+                        int id = rs.getInt("book_id");
+                        String title = rs.getString("title");
+                        String author = rs.getString("author");
+                        String category = rs.getString("category");
+                        double price = rs.getDouble("price");
+                        int quantity = rs.getInt("quantity");
+            %>
+            <tr>
+                <td><%= id %></td>
+                <td><%= title %></td>
+                <td><%= author != null ? author : "-" %></td>
+                <td><%= category != null ? category : "-" %></td>
+                <td>$<%= String.format("%.2f", price) %></td>
+                <td><%= quantity %></td>
+                <td>
+                    <form action="ManageBooksServlet" method="post" onsubmit="return confirm('Delete this book?');" style="margin:0;">
+                        <input type="hidden" name="action" value="delete" />
+                        <input type="hidden" name="book_id" value="<%= id %>" />
+                        <button class="delete-btn" type="submit" title="Delete Book">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            <%
+                    }
+                    rs.close();
+                    ps.close();
+                    conn.close();
+                } catch (Exception e) {
+            %>
+            <tr><td colspan="7" style="color:red;">Error: <%= e.getMessage() %></td></tr>
+            <%
+                }
+            %>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

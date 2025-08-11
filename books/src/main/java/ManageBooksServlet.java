@@ -1,91 +1,78 @@
 
 
+import java.io.IOException;
+import java.sql.*;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 
-/**
- * Servlet implementation class ManageBooksServlet
- */
 @WebServlet("/ManageBooksServlet")
 public class ManageBooksServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	 private static final String DB_URL = "jdbc:mysql://localhost:3306/pahanaedu";
-	    private static final String DB_USER = "root";
-	    private static final String DB_PASSWORD = "";  
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ManageBooksServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
+    private final String jdbcURL = "jdbc:mysql://localhost:3306/pahanaedu";
+    private final String jdbcUsername = "root";
+    private final String jdbcPassword = "";
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         String action = request.getParameter("action");
 
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-
-            if ("add".equalsIgnoreCase(action)) {
+        try (Connection conn = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword)) {
+            if ("add".equals(action)) {
                 String title = request.getParameter("title");
                 String author = request.getParameter("author");
-                double price = Double.parseDouble(request.getParameter("price"));
-                int quantity = Integer.parseInt(request.getParameter("quantity"));
+                String category = request.getParameter("category");
+                String priceStr = request.getParameter("price");
+                String quantityStr = request.getParameter("quantity");
 
-                String sql = "INSERT INTO book (title, author, price, quantity) VALUES (?, ?, ?, ?)";
-                String sql1 = "INSERT INTO deletebook (title,) VALUES (?, )";
-                PreparedStatement ps1 = conn.prepareStatement(sql1);
-                ps1.setString(1, title);
-                PreparedStatement ps = conn.prepareStatement(sql1);
-                ps.setString(1, title);
-                ps.setString(2, author);
-                ps.setDouble(3, price);
-                ps.setInt(4, quantity);
-
-                int rows = ps.executeUpdate();
-                if (rows > 0) {
-                    response.sendRedirect("manage_books.jsp?message=addsuccess");
+                if (title == null || priceStr == null || title.trim().isEmpty() || priceStr.trim().isEmpty()) {
+                    request.setAttribute("message", "Title and Price are required.");
                 } else {
-                    response.sendRedirect("manage_books.jsp?message=error");
+                    double price = Double.parseDouble(priceStr);
+                    int quantity = quantityStr == null || quantityStr.trim().isEmpty() ? 0 : Integer.parseInt(quantityStr);
+
+                    String sql = "INSERT INTO books (title, author, price, category, quantity) VALUES (?, ?, ?, ?, ?)";
+                    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                        stmt.setString(1, title);
+                        stmt.setString(2, author);
+                        stmt.setDouble(3, price);
+                        stmt.setString(4, category);
+                        stmt.setInt(5, quantity);
+                        stmt.executeUpdate();
+                        request.setAttribute("message", "Book added successfully!");
+                    }
                 }
-
-            } else if ("delete".equalsIgnoreCase(action)) {
-                String booktitle = request.getParameter("title");
-
-                String sql = "DELETE FROM book WHERE title = ?";
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ps.setString(1, booktitle);
-
-
-                int rows = ps.executeUpdate();
-                if (rows > 0) {
-                    response.sendRedirect("manage_books.jsp?message=deletesuccess");
-                } else {
-                    response.sendRedirect("manage_books.jsp?message=error");
+            } else if ("delete".equals(action)) {
+                String bookIdStr = request.getParameter("book_id");
+                if (bookIdStr != null) {
+                    int bookId = Integer.parseInt(bookIdStr);
+                    String sql = "DELETE FROM books WHERE book_id = ?";
+                    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                        stmt.setInt(1, bookId);
+                        int rows = stmt.executeUpdate();
+                        if (rows > 0) {
+                            request.setAttribute("message", "Book deleted successfully!");
+                        } else {
+                            request.setAttribute("message", "Book not found.");
+                        }
+                    }
                 }
-
-            } else {
-                response.sendRedirect("manage_books.jsp?message=error");
             }
-
-            conn.close();
-
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            response.sendRedirect("manage_books.jsp?message=error");
+            request.setAttribute("message", "Database error: " + e.getMessage());
         }
+
+        request.getRequestDispatcher("manage_books.jsp").forward(request, response);
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Redirect to POST for simplicity or show books list
+        doPost(request, response);
     }
 }

@@ -46,7 +46,7 @@ public class LoginServlet extends HttpServlet {
                         response.sendRedirect("admin_dashboard.jsp");
                         break;
                     case "cashier":
-                        response.sendRedirect("cashierDashboard.jsp");
+                        response.sendRedirect("cashier_dashboard.jsp");
                         break;
                     case "customer":
                         response.sendRedirect("customerDashboard.jsp");

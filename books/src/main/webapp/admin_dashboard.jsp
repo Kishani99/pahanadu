@@ -78,7 +78,7 @@
     <div class="container">
         <div class="card">
             <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Register">
-            <a href="register_customer.jsp">Register Customer</a>
+            <a href="Admin register_customer.jsp">Register Customer</a>
         </div>
 
 
