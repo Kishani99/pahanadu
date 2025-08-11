@@ -46,7 +46,10 @@ public class ManageBooksServlet extends HttpServlet {
                 int quantity = Integer.parseInt(request.getParameter("quantity"));
 
                 String sql = "INSERT INTO book (title, author, price, quantity) VALUES (?, ?, ?, ?)";
-                PreparedStatement ps = conn.prepareStatement(sql);
+                String sql1 = "INSERT INTO deletebook (title,) VALUES (?, )";
+                PreparedStatement ps1 = conn.prepareStatement(sql1);
+                ps1.setString(1, title);
+                PreparedStatement ps = conn.prepareStatement(sql1);
                 ps.setString(1, title);
                 ps.setString(2, author);
                 ps.setDouble(3, price);
@@ -60,11 +63,12 @@ public class ManageBooksServlet extends HttpServlet {
                 }
 
             } else if ("delete".equalsIgnoreCase(action)) {
-                int bookId = Integer.parseInt(request.getParameter("book_id"));
+                String booktitle = request.getParameter("title");
 
-                String sql = "DELETE FROM book WHERE book_id = ?";
+                String sql = "DELETE FROM book WHERE title = ?";
                 PreparedStatement ps = conn.prepareStatement(sql);
-                ps.setInt(1, bookId);
+                ps.setString(1, booktitle);
+
 
                 int rows = ps.executeUpdate();
                 if (rows > 0) {

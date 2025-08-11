@@ -3,7 +3,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Register New Customer - Pahana Edu</title>
+    <title>Add New Customer Account - Pahana Edu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -12,89 +13,94 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
         }
-
         .register-container {
             background: white;
-            padding: 40px 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 450px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            width: 400px;
         }
-
         h2 {
             text-align: center;
-            margin-bottom: 20px;
             color: #333;
+            margin-bottom: 20px;
         }
-
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 16px;
+        .input-group {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 10px;
+            background: #f9f9f9;
         }
-
+        .input-group i {
+            margin-right: 10px;
+            color: #555;
+        }
+        .input-group input {
+            border: none;
+            outline: none;
+            background: none;
+            flex: 1;
+        }
         button {
             width: 100%;
-            padding: 12px;
-            background-color: #007bff;
+            padding: 10px;
+            background: #2196F3;
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 16px;
+            border-radius: 10px;
             cursor: pointer;
+            font-size: 16px;
         }
-
         button:hover {
-            background-color: #0056b3;
+            background: #1976D2;
         }
-
-        .message {
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
         .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            color: red;
+            text-align: center;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="register-container">
-        <h2>Add New Customer</h2>
-
-        <% 
-            String msg = (String) request.getAttribute("message");
-            String type = (String) request.getAttribute("messageType");
-            if (msg != null && type != null) {
-        %>
-            <div class="message <%= type %>"><%= msg %></div>
-        <% } %>
-
-        <form action="RegisterCustomerServlet" method="post">
+<div class="register-container">
+    <h2><i class="fas fa-user-plus"></i> New Customer Registration</h2>
+    <form action="RegisterServlet" method="post">
+        <div class="input-group">
+            <i class="fas fa-id-card"></i>
             <input type="text" name="accountNumber" placeholder="Account Number" required>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-user"></i>
             <input type="text" name="name" placeholder="Full Name" required>
-            <textarea name="address" placeholder="Address" required></textarea>
-            <input type="text" name="telephone" placeholder="Telephone Number" required>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-map-marker-alt"></i>
+            <input type="text" name="address" placeholder="Address" required>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-phone"></i>
+            <input type="text" name="telephone" placeholder="Telephone" required>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-user-circle"></i>
+            <input type="text" name="username" placeholder="Username" required>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
             <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Register</button>
-        </form>
-    </div>
+        </div>
+        <button type="submit"><i class="fas fa-check"></i> Register</button>
+    </form>
+    <%
+        String error = request.getParameter("error");
+        if (error != null) {
+            out.print("<p class='error'>" + error + "</p>");
+        }
+    %>
+</div>
 </body>
 </html>

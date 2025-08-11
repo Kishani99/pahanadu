@@ -62,7 +62,6 @@
     <div class="dashboard-container">
         <h2>👨‍💼 Cashier Dashboard</h2>
         <a class="btn" href="cashier_addBook.jsp"><i class="fas fa-plus icon"></i>Add Books</a>
-        <a class="btn" href="view_books.jsp"><i class="fas fa-book icon"></i>View Books</a>
         <a class="btn" href="update_book.jsp"><i class="fas fa-edit icon"></i>Update Books</a>
         <a class="btn" href="print_bill.jsp"><i class="fas fa-file-invoice icon"></i>Print Bill</a>
         <a class="btn logout-btn" href="logout.jsp"><i class="fas fa-sign-out-alt icon"></i>Exit</a>

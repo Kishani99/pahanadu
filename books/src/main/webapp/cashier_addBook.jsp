@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Add Books - Pahana Edu</title>
+    <title>Manage Books - Pahana Edu</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
@@ -168,6 +168,16 @@
     </button>
 </form>
 
+
+<!-- Book Table -->
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Price (Rs)</th>
+        <th>Quantity</th>
+    </tr>
 <%
     try {
         Class.forName("com.mysql.jdbc.Driver");
@@ -176,7 +186,16 @@
         ResultSet rs = stmt.executeQuery("SELECT * FROM book");
 
         while (rs.next()) {
-      }
+%>
+    <tr>
+        <td><%= rs.getInt("book_id") %></td>
+        <td><%= rs.getString("title") %></td>
+        <td><%= rs.getString("author") %></td>
+        <td><%= rs.getDouble("price") %></td>
+        <td><%= rs.getInt("quantity") %></td>
+    </tr>
+<%
+        }
         rs.close();
         conn.close();
     } catch (Exception e) {
@@ -185,8 +204,8 @@
 %>
 </table>
 
-
-<a href="cashier_dashboard.jsp" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Cashier Panel</a>
+<!-- Back to Admin Panel Button -->
+<a href="cashier_dashboard.jsp" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Admin Panel</a>
 
 </body>
 </html>

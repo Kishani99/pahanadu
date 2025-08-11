@@ -170,8 +170,8 @@
 
 <!-- Delete Book Form -->
 <form method="post" action="ManageBooksServlet">
-    <label><i class="fa-solid fa-trash"></i> Book ID to Delete:</label>
-    <input type="number" name="book_id" required>
+    <label><i class="fa-solid fa-trash"></i> Book name to Delete</label>
+    <input type="name" name="title" required>
 
     <button class="delete-btn" type="submit" name="action" value="delete">
         <i class="fa-solid fa-trash-can"></i> Delete Book

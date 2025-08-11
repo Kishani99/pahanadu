@@ -1,8 +1,10 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>Login - Pahana Edu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -13,111 +15,106 @@
             height: 100vh;
             margin: 0;
         }
-
         .login-container {
             background: white;
-            padding: 40px 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
+            padding: 35px 30px;
+            border-radius: 15px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+            width: 360px;
             text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
-        .logo {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 20px;
+        .login-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.25);
         }
-
-        h2 {
+        .login-container h2 {
             margin-bottom: 25px;
             color: #333;
+            font-size: 1.6rem;
         }
-
-        input[type="text"],
-        input[type="password"],
-        select {
-            width: 100%;
-            padding: 12px 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: 0.2s;
+        .input-group {
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: #f9f9f9;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
-
-        input:focus,
-        select:focus {
-            border-color: #007bff;
+        .input-group:focus-within {
+            border-color: #4CAF50;
+            box-shadow: 0 0 6px rgba(76, 175, 80, 0.4);
+            background: #fff;
+        }
+        .input-group i {
+            margin-right: 10px;
+            color: #4CAF50;
+            font-size: 1.2rem;
+        }
+        .input-group input {
+            border: none;
             outline: none;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+            background: none;
+            flex: 1;
+            font-size: 1rem;
         }
-
         button {
             width: 100%;
             padding: 12px;
-            background-color: #007bff;
+            background: #4CAF50;
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 16px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
+            font-size: 16px;
+            margin-top: 5px;
+            transition: background 0.3s ease, transform 0.2s ease;
         }
-
         button:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px);
+            background: #45a049;
+            transform: scale(1.02);
         }
-
-        .secondary-buttons {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
+        .register-btn {
+            background: #2196F3;
+            margin-top: 10px;
         }
-
-        .secondary-buttons a {
-            text-decoration: none;
-            flex: 1;
-            margin: 0 5px;
+        .register-btn:hover {
+            background: #1976D2;
         }
-
-        .secondary-buttons button {
-            background-color: #6c757d;
-        }
-
-        .secondary-buttons button:hover {
-            background-color: #5a6268;
-        }
-
-        @media (max-width: 480px) {
-            .login-container {
-                padding: 30px 20px;
-            }
+        .error {
+            color: red;
+            margin-top: 15px;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <!-- Logo (change this to your own logo path if needed) -->
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Logo" class="logo">
-        <h2>Login - Pahana Edu</h2>
-        <form action="LoginServlet" method="post">
+
+<div class="login-container">
+    <h2><i class="fas fa-book-open"></i> Pahana Edu Login</h2>
+    <form action="LoginServlet" method="post">
+        <div class="input-group">
+            <i class="fas fa-user"></i>
             <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <select name="role" required>
-                <option value="">Select Role</option>
-                <option value="admin">Admin</option>
-                <option value="cashier">Cashier</option>
-                <option value="customer">Customer</option>
-            </select>
-            <button type="submit">Login</button>
-        </form>
-        <div class="secondary-buttons">
-            <a href="register.jsp"><button type="button">Register</button></a>
-            <a href="help.jsp"><button type="button">Help</button></a>
         </div>
-    </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" name="password" placeholder="Password" required>
+        </div>
+        <button type="submit"><i class="fas fa-sign-in-alt"></i> Login</button>
+    </form>
+    <form action="register.jsp" method="get">
+        <button type="submit" class="register-btn"><i class="fas fa-user-plus"></i> Register</button>
+    </form>
+    <%
+        String error = request.getParameter("error");
+        if (error != null) {
+            out.print("<p class='error'>" + error + "</p>");
+        }
+    %>
+</div>
+
 </body>
 </html>
